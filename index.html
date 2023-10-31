@@ -3,9 +3,42 @@
 <head>
     <meta charset="utf-8">
     <title>Rock, Paper, Scissors</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="btnDiv">
+    <button type="button" id="rock">Rock</button><br>
+    <button type="button" id="paper">Paper</button><br>
+    <button type="button" id="scissors">Scissors</button>
+    </div>
+
+    <div id="results"><br>Wins: 0<br>Losses: 0<br> Ties: 0<br></div>
+
     <script>
+
+        let numWins = 0;
+        let numLosses = 0;
+        let numTies = 0;
+        let wonGame;
+
+        function updateScore(outcomeText) {
+            results = document.querySelector("#results");
+            text = `${outcomeText}<br>
+                    Wins: ${numWins}<br>
+                    Losses: ${numLosses}<br>
+                    Ties: ${numTies}<br>`;
+
+            if(numWins == 5){
+                text += "Player wins!"
+                numWins = numLosses = numTies = 0;
+            }
+            if(numLosses == 5){
+                text += "CPU wins!"
+                numWins = numLosses = numTies = 0;
+            }
+            results.innerHTML = text;
+            
+        }
 
         function getComputerChoice(){
             let choice;
@@ -25,39 +58,51 @@
         }
 
         function playRound(choice){
+            
             choice = choice.toLowerCase();
             let cpu = getComputerChoice();
-            let win = "You win! " + choice + " beats " + cpu;
-            let lose = "You lose! " + cpu + " beats " + choice;
+            console.log("playRound called with " + choice + " and cpu " +cpu);
+            let win = "You win! " + choice + " beats " + cpu + ".";
+            let lose = "You lose! " + cpu + " beats " + choice + ".";
+            let tie = "Tie!";
             if(choice === cpu){
-                console.log("Tie!");
+                numTies++;
+                updateScore(tie);
                 return 0;
             }
-            if(choice === "rock" && cpu === "paper"){
-                console.log(lose);
+            else if(choice === "rock" && cpu === "paper"){
+                numLosses++;
+                updateScore(lose);
                 return 0;
             }
-            if(choice === "paper" && cpu === "scissors"){
-                console.log(lose);
+            else if(choice === "paper" && cpu === "scissors"){
+                numLosses++;
+                updateScore(lose);
                 return 0;
             }
-            if(choice === "scissors" && cpu === "rock"){
-                console.log(lose);
+            else if(choice === "scissors" && cpu === "rock"){
+                numLosses++;
+                updateScore(lose);
                 return 0;
             }
-            console.log(win);
-            return 1;
+            else{
+                numWins++;
+                updateScore(win);
+                return 1;
+            }
+            
         }
     
-        function game(n = 5){
-            let score = 0;
-            for(let i = 0; i < n; i++){
-                score += playRound(prompt("Enter your move: "));
-            }
-            console.log("You won " + score + " out of 5 games.");
-        }
+        const btns = document.querySelectorAll("button");
+        btns.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                let choice = e.target.getAttribute("id");
+                console.log("You selected " + choice);
+                playRound(choice);
+            });
+        });
 
-        game();
+        
         
     </script>
 </body>
